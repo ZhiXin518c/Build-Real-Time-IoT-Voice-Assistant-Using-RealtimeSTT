@@ -223,5 +223,3 @@ For support and questions:
 
 ---
 
-**Built with ❤️ by Manus AI**
-
