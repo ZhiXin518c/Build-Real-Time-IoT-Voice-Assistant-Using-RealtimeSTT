@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant - IoT Control</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-microphone-alt"></i>
+                    <h1>Voice Assistant</h1>
+                </div>
+                <div class="status-indicator" id="statusIndicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Offline</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Control Panel -->
+            <section class="control-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-sliders-h"></i> Voice Assistant Control</h2>
+                </div>
+                
+                <div class="control-grid">
+                    <!-- Voice Assistant Controls -->
+                    <div class="control-card">
+                        <h3><i class="fas fa-microphone"></i> Voice Control</h3>
+                        <div class="control-buttons">
+                            <button id="startBtn" class="btn btn-primary">
+                                <i class="fas fa-play"></i> Start Assistant
+                            </button>
+                            <button id="stopBtn" class="btn btn-secondary" disabled>
+                                <i class="fas fa-stop"></i> Stop Assistant
+                            </button>
+                        </div>
+                        
+                        <div class="config-section">
+                            <div class="form-group">
+                                <label for="wakeWords">Wake Words:</label>
+                                <select id="wakeWords">
+                                    <option value="jarvis">Jarvis</option>
+                                    <option value="alexa">Alexa</option>
+                                    <option value="hey google">Hey Google</option>
+                                    <option value="computer">Computer</option>
+                                    <option value="ok google">OK Google</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="model">Model:</label>
+                                <select id="model">
+                                    <option value="tiny">Tiny (Fastest)</option>
+                                    <option value="base" selected>Base (Recommended)</option>
+                                    <option value="small">Small</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="large">Large (Most Accurate)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Test Commands -->
+                    <div class="control-card">
+                        <h3><i class="fas fa-terminal"></i> Test Commands</h3>
+                        <div class="test-section">
+                            <div class="form-group">
+                                <label for="testCommand">Test Voice Command:</label>
+                                <input type="text" id="testCommand" placeholder="e.g., turn on living room light">
+                            </div>
+                            <button id="testBtn" class="btn btn-accent">
+                                <i class="fas fa-play-circle"></i> Test Command
+                            </button>
+                        </div>
+                        
+                        <div class="example-commands">
+                            <h4>Example Commands:</h4>
+                            <ul>
+                                <li>"Turn on bedroom light"</li>
+                                <li>"Set living room light brightness to 50"</li>
+                                <li>"Turn off all lights"</li>
+                                <li>"Set thermostat to 22 degrees"</li>
+                                <li>"List all devices"</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Transcription -->
+            <section class="transcription-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-comments"></i> Live Transcription</h2>
+                    <button id="clearTranscription" class="btn btn-small">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
+                </div>
+                <div class="transcription-content">
+                    <div id="transcriptionDisplay" class="transcription-display">
+                        <div class="placeholder">
+                            <i class="fas fa-microphone-slash"></i>
+                            <p>Voice assistant is not active. Start the assistant to see transcriptions.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Device Grid -->
+            <section class="devices-section">
+                <div class="panel-header">
+                    <h2><i class="fas fa-home"></i> IoT Devices</h2>
+                    <div class="device-controls">
+                        <button id="refreshDevices" class="btn btn-small">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button id="addDevice" class="btn btn-small btn-primary">
+                            <i class="fas fa-plus"></i> Add Device
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="device-filters">
+                    <select id="locationFilter">
+                        <option value="">All Locations</option>
+                    </select>
+                    <select id="typeFilter">
+                        <option value="">All Types</option>
+                    </select>
+                </div>
+                
+                <div id="devicesGrid" class="devices-grid">
+                    <!-- Devices will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Activity Log -->
+            <section class="activity-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-history"></i> Activity Log</h2>
+                    <div class="log-controls">
+                        <select id="eventFilter">
+                            <option value="">All Events</option>
+                            <option value="command">Commands</option>
+                            <option value="transcription_final">Transcriptions</option>
+                            <option value="status">Status</option>
+                            <option value="system">System</option>
+                        </select>
+                        <button id="clearLog" class="btn btn-small">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+                <div id="activityLog" class="activity-log">
+                    <!-- Activity items will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Device Modal -->
+    <div id="deviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Device Details</h3>
+                <button class="modal-close" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Device details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Device Modal -->
+    <div id="addDeviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Device</h3>
+                <button class="modal-close" id="closeAddModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addDeviceForm">
+                    <div class="form-group">
+                        <label for="deviceId">Device ID:</label>
+                        <input type="text" id="deviceId" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deviceName">Device Name:</label>
+                        <input type="text" id="deviceName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deviceType">Device Type:</label>
+                        <select id="deviceType" required>
+                            <option value="">Select Type</option>
+                            <option value="light">Smart Light</option>
+                            <option value="thermostat">Thermostat</option>
+                            <option value="fan">Fan</option>
+                            <option value="door_lock">Door Lock</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="deviceLocation">Location:</label>
+                        <input type="text" id="deviceLocation" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Add Device</button>
+                        <button type="button" class="btn btn-secondary" id="cancelAdd">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
